@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Image with DALL-E</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Text to Image Generator</h1>
+        <p>Enter a text prompt to generate an image using DALL-E.</p>
+        <form id="text-form">
+            <input type="text" id="text-input" placeholder="Enter text" required>
+            <button type="submit">Generate Image</button>
+        </form>
+        <div id="loading" class="loading">Generating image...</div>
+        <img id="generated-image" alt="Generated Image" style="display: none;">
+    </div>
+
+    <script>
+        document.getElementById("text-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const text = document.getElementById("text-input").value;
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("generated-image").style.display = "none";
+            const response = await fetch("/generate-image", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ text: text })
+            });
+            const result = await response.json();
+            const imgUrl = result.image_url;
+            const img = document.getElementById("generated-image");
+            img.src = imgUrl;
+            img.style.display = "block";
+            document.getElementById("loading").style.display = "none";
+        });
+    </script>
+</body>
+
+</html>
